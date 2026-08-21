@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flypath — Fly anywhere, pay less</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-deep:#1477D6;
+    --sky-mid:#3F9FEA;
+    --sky-light:#8FD1FA;
+    --sky-pale:#EAF6FF;
+    --sun-orange:#FF7A33;
+    --sun-orange-dark:#E85D1B;
+    --sun-yellow:#FFC247;
+    --white:#FFFFFF;
+    --ink:#0F1E2B;
+    --ink-soft:#52697A;
+    --ink-faint:#8FA3AF;
+    --line:#E4EEF3;
+    --radius:18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    background:var(--white);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Space Grotesk', sans-serif;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{text-decoration:none; color:inherit;}
+  button{font-family:inherit; cursor:pointer; border:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:76px;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:20px; letter-spacing:-0.02em;
+  }
+  .logo-mark{
+    width:34px; height:34px; border-radius:10px;
+    background:linear-gradient(135deg, var(--sun-yellow), var(--sun-orange));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .logo-mark svg{width:18px; height:18px;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:14.5px; font-weight:500; color:var(--ink-soft);
+    transition:color .15s;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    background:var(--ink);
+    color:#fff;
+    padding:10px 20px;
+    border-radius:100px;
+    font-size:14px; font-weight:600;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg, var(--sky-pale) 0%, #FFFFFF 62%);
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1fr 460px;
+    gap:40px;
+    align-items:center;
+    padding-top:76px; padding-bottom:56px;
+    min-height:640px;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:600; color:var(--sun-orange-dark);
+    background:#FFF1E6; border:1px solid #FFDCC0;
+    padding:6px 14px; border-radius:100px;
+    margin-bottom:24px;
+  }
+  .eyebrow::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--sun-orange); flex-shrink:0;
+  }
+  h1{
+    font-size:clamp(38px, 4.6vw, 60px);
+    line-height:1.03;
+    letter-spacing:-0.03em;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:22px;
+  }
+  h1 .accent{
+    background:linear-gradient(100deg, var(--sky-deep), var(--sky-mid));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-sub{
+    font-size:17px; line-height:1.6; color:var(--ink-soft);
+    max-width:480px; margin-bottom:36px;
+  }
+
+  /* search card */
+  .search-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:8px;
+    box-shadow:0 20px 50px -20px rgba(20,70,110,0.18);
+    display:flex; gap:6px;
+    max-width:560px;
+  }
+  .search-field{
+    flex:1;
+    display:flex; flex-direction:column; gap:2px;
+    padding:12px 16px;
+    border-radius:12px;
+  }
+  .search-field:hover{background:var(--sky-pale);}
+  .search-field label{
+    font-size:11px; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--ink-faint);
+  }
+  .search-field input{
+    border:none; outline:none; font-size:15px; font-weight:600;
+    color:var(--ink); background:transparent; font-family:inherit;
+    width:100%;
+  }
+  .search-field input::placeholder{color:var(--ink-faint); font-weight:500;}
+  .search-btn{
+    background:linear-gradient(135deg, var(--sun-orange), var(--sun-orange-dark));
+    color:#fff; font-weight:600; font-size:14.5px;
+    padding:0 26px; border-radius:12px;
+    display:flex; align-items:center; gap:8px;
+    flex-shrink:0;
+    transition:transform .15s, box-shadow .15s;
+    box-shadow:0 10px 24px -8px rgba(232,93,27,0.55);
+  }
+  .search-btn:hover{transform:translateY(-1px);}
+  .anywhere-note{
+    font-size:13px; color:var(--ink-faint); margin-top:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+
+  /* ---------- SIGNATURE: SUN COMPASS ---------- */
+  .compass-wrap{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    aspect-ratio:1/1;
+  }
+  .compass-wrap svg{width:100%; height:100%; overflow:visible;}
+  .price-pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px; font-weight:600;
+  }
+  @keyframes drift{
+    0%,100%{ transform:translateY(0px); }
+    50%{ transform:translateY(-6px); }
+  }
+  @keyframes pulse-ray{
+    0%{ stroke-dashoffset:24; }
+    100%{ stroke-dashoffset:0; }
+  }
+  @keyframes sun-glow{
+    0%,100%{ opacity:0.55; }
+    50%{ opacity:0.85; }
+  }
+  .ray{
+    stroke-dasharray:4 4;
+    animation:pulse-ray 1.4s linear infinite;
+  }
+  .glow-core{ animation:sun-glow 3.2s ease-in-out infinite; }
+  .float-pin{ animation:drift 4.5s ease-in-out infinite; }
+  .float-pin:nth-child(odd){ animation-delay:0.6s; }
+
+  /* ---------- DEALS SECTION ---------- */
+  .section{padding:88px 0;}
+  .section-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:40px; gap:24px; flex-wrap:wrap;
+  }
+  .section-tag{
+    font-size:12.5px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--sky-deep);
+    margin-bottom:10px; display:block;
+  }
+  .section-title{
+    font-size:32px; font-weight:700; letter-spacing:-0.02em;
+  }
+  .section-desc{color:var(--ink-soft); font-size:15px; max-width:420px;}
+
+  .deals-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  .deal-card{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#fff;
+    transition:transform .18s, box-shadow .18s, border-color .18s;
+    display:flex; flex-direction:column;
+  }
+  .deal-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 24px 40px -22px rgba(20,70,110,0.28);
+    border-color:transparent;
+  }
+  .deal-visual{
+    height:132px;
+    position:relative;
+    display:flex; align-items:flex-end;
+    padding:14px;
+  }
+  .deal-badge{
+    position:absolute; top:12px; right:12px;
+    background:rgba(255,255,255,0.92);
+    color:var(--sun-orange-dark);
+    font-size:11px; font-weight:700;
+    padding:4px 10px; border-radius:100px;
+    letter-spacing:0.02em;
+  }
+  .deal-route{
+    color:#fff; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:6px;
+    text-shadow:0 2px 8px rgba(0,0,0,0.25);
+  }
+  .deal-body{padding:18px 18px 20px;}
+  .deal-dest{font-size:19px; font-weight:700; margin-bottom:2px;}
+  .deal-dates{font-size:13px; color:var(--ink-faint); margin-bottom:14px;}
+  .deal-price-row{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .deal-price{font-size:26px; font-weight:700; font-family:'Space Grotesk', sans-serif;}
+  .deal-price span{font-size:13px; color:var(--ink-faint); font-weight:500;}
+  .deal-was{font-size:12.5px; color:var(--ink-faint); text-decoration:line-through;}
+  .deal-actions{display:flex; gap:8px;}
+  .btn-alert{
+    flex:1;
+    border:1px solid var(--line);
+    background:#fff; color:var(--ink);
+    font-size:13px; font-weight:600;
+    padding:10px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:border-color .15s, background .15s;
+  }
+  .btn-alert:hover{border-color:var(--sky-mid); background:var(--sky-pale);}
+  .btn-view{
+    flex:1;
+    background:var(--ink); color:#fff;
+    font-size:13px; font-weight:600;
+    padding:10px; border-radius:10px;
+    text-align:center;
+    transition:background .15s;
+  }
+  .btn-view:hover{background:#000;}
+
+  /* ---------- ALERTS SECTION ---------- */
+  .alerts-section{
+    background:linear-gradient(180deg, #FFF9F0, #FFFFFF);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .alerts-layout{
+    display:grid; grid-template-columns:400px 1fr; gap:48px;
+    align-items:flex-start;
+  }
+  .alert-form{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px; box-shadow:0 20px 44px -28px rgba(20,70,110,0.2);
+  }
+  .alert-form h3{font-size:18px; margin-bottom:4px; font-weight:700;}
+  .alert-form .sub{font-size:13px; color:var(--ink-soft); margin-bottom:20px;}
+  .form-row{margin-bottom:16px;}
+  .form-row label{
+    display:block; font-size:12px; font-weight:600; color:var(--ink-soft);
+    margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .form-row input, .form-row select{
+    width:100%; padding:11px 13px; border:1px solid var(--line);
+    border-radius:10px; font-size:14px; font-family:inherit; color:var(--ink);
+    outline:none; transition:border-color .15s;
+  }
+  .form-row input:focus, .form-row select:focus{border-color:var(--sky-mid);}
+  .form-row-split{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .submit-alert{
+    width:100%;
+    background:linear-gradient(135deg, var(--sky-deep), var(--sky-mid));
+    color:#fff; font-weight:600; font-size:14.5px;
+    padding:13px; border-radius:10px;
+    margin-top:6px;
+    box-shadow:0 10px 24px -10px rgba(20,119,214,0.5);
+  }
+
+  .alert-list{display:flex; flex-direction:column; gap:12px;}
+  .alert-item{
+    display:flex; align-items:center; justify-content:space-between;
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:16px 20px;
+  }
+  .alert-item-left{display:flex; align-items:center; gap:14px;}
+  .alert-route-icon{
+    width:40px; height:40px; border-radius:10px;
+    background:var(--sky-pale); color:var(--sky-deep);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .alert-route{font-weight:700; font-size:14.5px;}
+  .alert-meta{font-size:12.5px; color:var(--ink-faint); margin-top:2px;}
+  .alert-status{
+    display:flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:600;
+  }
+  .status-dot{width:7px; height:7px; border-radius:50%;}
+  .status-watching .status-dot{background:var(--sun-yellow);}
+  .status-hit .status-dot{background:#2FB86B;}
+  .status-watching{color:#B8860B;}
+  .status-hit{color:#1F9455;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:56px 0 40px;}
+  footer .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:16px;
+  }
+  .footer-note{font-size:13px; color:var(--ink-faint);}
+  .footer-links{display:flex; gap:24px;}
+  .footer-links a{font-size:13px; color:var(--ink-soft); font-weight:500;}
+  .footer-links a:hover{color:var(--sky-deep);}
+
+  @media (max-width:920px){
+    .hero .wrap{grid-template-columns:1fr; padding-top:40px;}
+    .compass-wrap{max-width:340px; margin:0 auto;}
+    .deals-grid{grid-template-columns:1fr 1fr;}
+    .alerts-layout{grid-template-columns:1fr;}
+    .search-card{flex-direction:column;}
+    .search-btn{padding:14px; justify-content:center;}
+  }
+  @media (max-width:600px){
+    .deals-grid{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .wrap{padding:0 20px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 12l19-8-6 8 6 8-19-8z" fill="white"/></svg>
+      </div>
+      Flypath
+    </div>
+    <div class="nav-links">
+      <a href="#deals">Deals</a>
+      <a href="#alerts">Price alerts</a>
+      <a href="#">How it works</a>
+    </div>
+    <a href="#" class="nav-cta">Sign in</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Now searching 750+ carriers</div>
+      <h1>Fly anywhere.<br><span class="accent">Pay less than everyone.</span></h1>
+      <p class="hero-sub">Tell us where you're starting from. We'll fan out across the globe, rank every destination by price, and watch fares for you until they drop.</p>
+
+      <form class="search-card" onsubmit="return false;">
+        <div class="search-field">
+          <label>From</label>
+          <input type="text" value="Brisbane (BNE)" placeholder="Origin city">
+        </div>
+        <div class="search-field">
+          <label>When</label>
+          <input type="text" value="Anytime · Next 3mo" placeholder="Dates">
+        </div>
+        <button class="search-btn">
+          Search anywhere
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+      <div class="anywhere-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        No destination in mind? Leave "where to" blank — that's the whole point.
+      </div>
+    </div>
+
+    <div class="compass-wrap" aria-hidden="true">
+      <svg viewBox="0 0 420 420">
+        <defs>
+          <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFC247" stop-opacity="0.9"/>
+            <stop offset="60%" stop-color="#FF7A33" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#FF7A33" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="sunCore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFD066"/>
+            <stop offset="100%" stop-color="#FF7A33"/>
+          </linearGradient>
+          <linearGradient id="skyRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#8FD1FA"/>
+            <stop offset="100%" stop-color="#1477D6"/>
+          </linearGradient>
+        </defs>
+
+        <circle cx="210" cy="210" r="185" fill="none" stroke="#EAF6FF" stroke-width="1.5"/>
+        <circle cx="210" cy="210" r="140" fill="none" stroke="#EAF6FF" stroke-width="1.5"/>
+
+        <circle cx="210" cy="210" r="95" fill="url(#sunGlow)" class="glow-core"/>
+        <circle cx="210" cy="210" r="38" fill="url(#sunCore)"/>
+        <circle cx="210" cy="210" r="38" fill="none" stroke="#fff" stroke-width="2" opacity="0.6"/>
+        <text x="210" y="215" text-anchor="middle" fill="#fff" font-family="Space Grotesk" font-weight="700" font-size="13">BNE</text>
+
+        <!-- flight rays fanning out -->
+        <g stroke="#1477D6" stroke-width="2" fill="none" opacity="0.55">
+          <path class="ray" d="M210 210 Q 260 130 330 90"/>
+          <path class="ray" d="M210 210 Q 300 190 385 195" style="animation-delay:0.2s"/>
+          <path class="ray" d="M210 210 Q 270 280 300 355" style="animation-delay:0.4s"/>
+          <path class="ray" d="M210 210 Q 150 290 90 340" style="animation-delay:0.6s"/>
+          <path class="ray" d="M210 210 Q 110 160 45 130" style="animation-delay:0.8s"/>
+        </g>
+
+        <!-- destination pins with price pills -->
+        <g class="float-pin">
+          <circle cx="330" cy="90" r="5" fill="#FF7A33"/>
+          <rect x="300" y="60" width="64" height="22" rx="11" fill="#fff" stroke="#E4EEF3"/>
+          <text x="332" y="75" text-anchor="middle" class="price-pill" fill="#0F1E2B">DPS $189</text>
+        </g>
+        <g class="float-pin">
+          <circle cx="385" cy="195" r="5" fill="#FF7A33"/>
+          <rect x="347" y="205" width="66" height="22" rx="11" fill="#fff" stroke="#E4EEF3"/>
+          <text x="380" y="220" text-anchor="middle" class="price-pill" fill="#0F1E2B">NRT $412</text>
+        </g>
+        <g class="float-pin">
+          <circle cx="300" cy="355" r="5" fill="#FF7A33"/>
+          <rect x="255" y="362" width="66" height="22" rx="11" fill="#fff" stroke="#E4EEF3"/>
+          <text x="288" y="377" text-anchor="middle" class="price-pill" fill="#0F1E2B">SIN $221</text>
+        </g>
+        <g class="float-pin">
+          <circle cx="90" cy="340" r="5" fill="#FF7A33"/>
+          <rect x="48" y="347" width="66" height="22" rx="11" fill="#fff" stroke="#E4EEF3"/>
+          <text x="81" y="362" text-anchor="middle" class="price-pill" fill="#0F1E2B">AKL $156</text>
+        </g>
+        <g class="float-pin">
+          <circle cx="45" cy="130" r="5" fill="#FF7A33"/>
+          <rect x="6" y="98" width="66" height="22" rx="11" fill="#fff" stroke="#E4EEF3"/>
+          <text x="39" y="113" text-anchor="middle" class="price-pill" fill="#0F1E2B">CPT $598</text>
+        </g>
+
+        <circle cx="210" cy="210" r="185" fill="none" stroke="url(#skyRing)" stroke-width="2" stroke-dasharray="2 10" opacity="0.5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="deals">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Fanning out from BNE</span>
+        <h2 class="section-title">Today's cheapest anywhere</h2>
+        <p class="section-desc">Ranked lowest to highest. Prices refresh every few hours from live inventory.</p>
+      </div>
+    </div>
+
+    <div class="deals-grid">
+      <div class="deal-card">
+        <div class="deal-visual" style="background:linear-gradient(160deg,#2FA6E0,#1477D6);">
+          <span class="deal-badge">Lowest today</span>
+          <div class="deal-route">BNE → AKL</div>
+        </div>
+        <div class="deal-body">
+          <div class="deal-dest">Auckland, New Zealand</div>
+          <div class="deal-dates">12 Oct – 19 Oct · Return</div>
+          <div class="deal-price-row">
+            <div class="deal-price">$156<span> AUD</span></div>
+            <div class="deal-was">was $298</div>
+          </div>
+          <div class="deal-actions">
+            <button class="btn-alert">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+              Alert
+            </button>
+            <a href="#" class="btn-view">View deal</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-visual" style="background:linear-gradient(160deg,#FFC247,#FF7A33);">
+          <span class="deal-badge">Trending</span>
+          <div class="deal-route">BNE → DPS</div>
+        </div>
+        <div class="deal-body">
+          <div class="deal-dest">Denpasar, Bali</div>
+          <div class="deal-dates">3 Sep – 10 Sep · Return</div>
+          <div class="deal-price-row">
+            <div class="deal-price">$189<span> AUD</span></div>
+            <div class="deal-was">was $310</div>
+          </div>
+          <div class="deal-actions">
+            <button class="btn-alert">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+              Alert
+            </button>
+            <a href="#" class="btn-view">View deal</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-visual" style="background:linear-gradient(160deg,#5FBF7F,#2E9E5B);">
+          <span class="deal-badge">Long weekend</span>
+          <div class="deal-route">BNE → SIN</div>
+        </div>
+        <div class="deal-body">
+          <div class="deal-dest">Singapore</div>
+          <div class="deal-dates">25 Sep – 29 Sep · Return</div>
+          <div class="deal-price-row">
+            <div class="deal-price">$221<span> AUD</span></div>
+            <div class="deal-was">was $349</div>
+          </div>
+          <div class="deal-actions">
+            <button class="btn-alert">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+              Alert
+            </button>
+            <a href="#" class="btn-view">View deal</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alerts-section" id="alerts">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Never miss a drop</span>
+        <h2 class="section-title">Price alerts</h2>
+        <p class="section-desc">Set a route and a target price. We'll check fares in the background and email you the moment it's beaten.</p>
+      </div>
+    </div>
+
+    <div class="alerts-layout">
+      <div class="alert-form">
+        <h3>Create an alert</h3>
+        <p class="sub">We'll notify you by email when the fare drops below your target.</p>
+        <div class="form-row-split">
+          <div class="form-row">
+            <label>From</label>
+            <input type="text" value="BNE" placeholder="Origin">
+          </div>
+          <div class="form-row">
+            <label>To</label>
+            <input type="text" value="Anywhere" placeholder="Destination">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Target price (AUD)</label>
+          <input type="text" placeholder="e.g. 200">
+        </div>
+        <div class="form-row">
+          <label>Notify me by</label>
+          <select>
+            <option>Email</option>
+            <option>Email + Push</option>
+          </select>
+        </div>
+        <button class="submit-alert">Start watching this route</button>
+      </div>
+
+      <div class="alert-list">
+        <div class="alert-item">
+          <div class="alert-item-left">
+            <div class="alert-route-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12l19-8-6 8 6 8-19-8z"/></svg>
+            </div>
+            <div>
+              <div class="alert-route">BNE → DPS</div>
+              <div class="alert-meta">Target $180 · currently $189</div>
+            </div>
+          </div>
+          <div class="alert-status status-watching"><span class="status-dot"></span>Watching</div>
+        </div>
+
+        <div class="alert-item">
+          <div class="alert-item-left">
+            <div class="alert-route-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12l19-8-6 8 6 8-19-8z"/></svg>
+            </div>
+            <div>
+              <div class="alert-route">BNE → NRT</div>
+              <div class="alert-meta">Target $450 · currently $412</div>
+            </div>
+          </div>
+          <div class="alert-status status-hit"><span class="status-dot"></span>Target hit</div>
+        </div>
+
+        <div class="alert-item">
+          <div class="alert-item-left">
+            <div class="alert-route-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12l19-8-6 8 6 8-19-8z"/></svg>
+            </div>
+            <div>
+              <div class="alert-route">BNE → Anywhere</div>
+              <div class="alert-meta">Target $250 · best now $156</div>
+            </div>
+          </div>
+          <div class="alert-status status-hit"><span class="status-dot"></span>Target hit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-note">Flypath — dummy prototype for pitch purposes. Fares shown are illustrative.</div>
+    <div class="footer-links">
+      <a href="#">How commissions work</a>
+      <a href="#">Privacy</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
